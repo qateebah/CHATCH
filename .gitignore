@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Firebase
+firebase-debug.log
+.firebase/
+
+# ملفات التكوين المحلية
+*.env
+*.local
+
+# ملفات محرر النصوص
+.vscode/
+.idea/
+
+# مجلدات البناء
+/dist/
+/build/
+
+# ملفات النسخ الاحتياطي
+*.bak
+*.swp
+*.swo
+
+# ملفات السجل
+*.log
+
+# ملفات النظام
+.DS_Store
+Thumbs.db
