@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YoChat - Chat</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="chatContainer">
+    <div id="messagesContainer"></div>
+    <input type="text" id="messageInput" placeholder="Type your message..." />
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/firestore.js"></script>
+  <script src="js/chat.js"></script>
+  <script>
+    const sendBtn = document.getElementById('sendBtn');
+    const messageInput = document.getElementById('messageInput');
+    sendBtn.addEventListener('click', () => {
+      const message = messageInput.value;
+      if (message) {
+        sendMessage(message);
+        messageInput.value = ''; // مسح حقل الرسالة
+      }
+    });
+
+    function sendMessage(message) {
+      const db = firebase.firestore();
+      db.collection("messages").add({
+        text: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        console.log("Message sent");
+        loadMessages();
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
+    }
+
+    function loadMessages() {
+      const db = firebase.firestore();
+      db.collection("messages").orderBy("timestamp").onSnapshot((snapshot) => {
+        const messagesContainer = document.getElementById('messagesContainer');
+        messagesContainer.innerHTML = ''; // مسح الرسائل الحالية
+        snapshot.forEach(doc => {
+          const message = doc.data().text;
+          const messageElement = document.createElement("div");
+          messageElement.textContent = message;
+          messagesContainer.appendChild(messageElement);
+        });
+      });
+    }
+
+    // تحميل الرسائل عند تحميل الصفحة
+    window.onload = loadMessages;
+  </script>
+</body>
+</html>
